@@ -48,10 +48,10 @@ static int validate_uuidv7_string(const char *uuid)
 {
 	size_t i;
 
-	if (!uuid || strlen(uuid) != (UUIDV7_STR_SIZE - 1)) {
+	if (!uuid || strlen(uuid) != (AST_UUIDV7_STR_LEN - 1)) {
 		return -1;
 	}
-	for (i = 0; i < UUIDV7_STR_SIZE - 1; i++) {
+	for (i = 0; i < AST_UUIDV7_STR_LEN - 1; i++) {
 		if (i == 8 || i == 13 || i == 18 || i == 23) {
 			if (uuid[i] != '-') {
 				return -1;
@@ -79,14 +79,14 @@ AST_TEST_DEFINE(uuidv7_selftest_runs)
 		info->category = "/main/uuidv7/";
 		info->summary = "Run built-in UUIDv7 self-test";
 		info->description =
-			"Verifies that uuidv7_selftest() succeeds for format, ordering, and overflow handling.";
+			"Verifies that ast_uuidv7_selftest() succeeds for format, ordering, and overflow handling.";
 		return AST_TEST_NOT_RUN;
 	case TEST_EXECUTE:
 		break;
 	}
 
-	if (uuidv7_selftest() != 0) {
-		ast_test_status_update(test, "uuidv7_selftest() failed\n");
+	if (ast_uuidv7_selftest() != 0) {
+		ast_test_status_update(test, "ast_uuidv7_selftest() failed\n");
 		return AST_TEST_FAIL;
 	}
 
@@ -95,7 +95,7 @@ AST_TEST_DEFINE(uuidv7_selftest_runs)
 
 AST_TEST_DEFINE(uuidv7_generate_format)
 {
-	char uuid[UUIDV7_STR_SIZE];
+	char uuid[AST_UUIDV7_STR_LEN];
 	char *ptr;
 	int i;
 
@@ -105,48 +105,48 @@ AST_TEST_DEFINE(uuidv7_generate_format)
 		info->category = "/main/uuidv7/";
 		info->summary = "UUIDv7 string format and version/variant";
 		info->description =
-			"Checks uuidv7_generate() and uuidv7() produce canonical lowercase UUIDv7 strings.";
+			"Checks ast_uuidv7_generate() and ast_uuidv7() produce canonical lowercase UUIDv7 strings.";
 		return AST_TEST_NOT_RUN;
 	case TEST_EXECUTE:
 		break;
 	}
 
-	if (uuidv7_generate(NULL, UUIDV7_STR_SIZE) != -1) {
-		ast_test_status_update(test, "uuidv7_generate(NULL) should fail\n");
+	if (ast_uuidv7_generate(NULL, AST_UUIDV7_STR_LEN) != -1) {
+		ast_test_status_update(test, "ast_uuidv7_generate(NULL) should fail\n");
 		return AST_TEST_FAIL;
 	}
-	if (uuidv7_generate(uuid, 8) != -1) {
-		ast_test_status_update(test, "uuidv7_generate() with short buffer should fail\n");
+	if (ast_uuidv7_generate(uuid, 8) != -1) {
+		ast_test_status_update(test, "ast_uuidv7_generate() with short buffer should fail\n");
 		return AST_TEST_FAIL;
 	}
 
 	memset(uuid, 0, sizeof(uuid));
-	if (uuidv7_generate(uuid, sizeof(uuid)) != 0) {
-		ast_test_status_update(test, "uuidv7_generate() failed\n");
+	if (ast_uuidv7_generate(uuid, sizeof(uuid)) != 0) {
+		ast_test_status_update(test, "ast_uuidv7_generate() failed\n");
 		return AST_TEST_FAIL;
 	}
 	if (validate_uuidv7_string(uuid)) {
-		ast_test_status_update(test, "Invalid UUIDv7 from uuidv7_generate(): %s\n", uuid);
+		ast_test_status_update(test, "Invalid UUIDv7 from ast_uuidv7_generate(): %s\n", uuid);
 		return AST_TEST_FAIL;
 	}
-	ast_test_status_update(test, "uuidv7_generate() -> %s\n", uuid);
+	ast_test_status_update(test, "ast_uuidv7_generate() -> %s\n", uuid);
 
-	ptr = uuidv7();
+	ptr = ast_uuidv7();
 	if (!ptr) {
-		ast_test_status_update(test, "uuidv7() returned NULL\n");
+		ast_test_status_update(test, "ast_uuidv7() returned NULL\n");
 		return AST_TEST_FAIL;
 	}
 	if (validate_uuidv7_string(ptr)) {
-		ast_test_status_update(test, "Invalid UUIDv7 from uuidv7(): %s\n", ptr);
+		ast_test_status_update(test, "Invalid UUIDv7 from ast_uuidv7(): %s\n", ptr);
 		return AST_TEST_FAIL;
 	}
 
 	/* Generate several and ensure uniqueness + non-decreasing lexical order. */
 	for (i = 0; i < 32; i++) {
-		char next[UUIDV7_STR_SIZE];
+		char next[AST_UUIDV7_STR_LEN];
 
-		if (uuidv7_generate(next, sizeof(next)) != 0) {
-			ast_test_status_update(test, "uuidv7_generate() failed on iteration %d\n", i);
+		if (ast_uuidv7_generate(next, sizeof(next)) != 0) {
+			ast_test_status_update(test, "ast_uuidv7_generate() failed on iteration %d\n", i);
 			return AST_TEST_FAIL;
 		}
 		if (validate_uuidv7_string(next)) {

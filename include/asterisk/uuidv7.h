@@ -32,15 +32,17 @@
 extern "C" {
 #endif
 
-#define UUIDV7_STR_SIZE 37
+/*! Size of a canonical UUIDv7 string plus terminating null byte */
+#define AST_UUIDV7_STR_LEN 37
+#define UUIDV7_STR_SIZE AST_UUIDV7_STR_LEN
 
-char *uuidv7(void);
-int uuidv7_generate(char *out, size_t n);
-int uuidv7_selftest(void);
+char *ast_uuidv7(void);
+int ast_uuidv7_generate(char *out, size_t n);
+int ast_uuidv7_selftest(void);
 
 #ifdef UUIDV7_TESTING
-void uuidv7_test_set_last_ms(uint64_t ms);
-uint64_t uuidv7_test_last_ms(void);
+void ast_uuidv7_test_set_last_ms(uint64_t ms);
+uint64_t ast_uuidv7_test_last_ms(void);
 #endif
 
 #ifdef __cplusplus

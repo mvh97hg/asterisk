@@ -325,9 +325,9 @@ static int uuidv7_validate_string(const char *uuid)
 	return 0;
 }
 
-char *uuidv7(void)
+char *ast_uuidv7(void)
 {
-	if(uuidv7_generate(uuidv7_tls_buf, sizeof(uuidv7_tls_buf)) != 0) {
+	if(ast_uuidv7_generate(uuidv7_tls_buf, sizeof(uuidv7_tls_buf)) != 0) {
 		return NULL;
 	}
 	return uuidv7_tls_buf;
@@ -337,7 +337,7 @@ char *uuidv7(void)
  * Public generate path: do not hold uuidv7_mu across entropy syscalls.
  * Fast path (same ms): increment under lock only. Reseed: unlock → RNG → relock.
  */
-int uuidv7_generate(char *out, size_t n)
+int ast_uuidv7_generate(char *out, size_t n)
 {
 	unsigned char raw[UUIDV7_RAW_SIZE];
 	unsigned char fresh_tail[UUIDV7_TAIL_SIZE];
@@ -388,7 +388,7 @@ int uuidv7_generate(char *out, size_t n)
 	}
 }
 
-int uuidv7_selftest(void)
+int ast_uuidv7_selftest(void)
 {
 	unsigned char probe[UUIDV7_RAW_SIZE];
 	unsigned char first[UUIDV7_RAW_SIZE];
@@ -463,7 +463,7 @@ restore:
 }
 
 #ifdef UUIDV7_TESTING
-void uuidv7_test_set_last_ms(uint64_t ms)
+void ast_uuidv7_test_set_last_ms(uint64_t ms)
 {
 	if(pthread_mutex_lock(&uuidv7_mu) == 0) {
 		uuidv7_last_ms = ms;
@@ -471,7 +471,7 @@ void uuidv7_test_set_last_ms(uint64_t ms)
 	}
 }
 
-uint64_t uuidv7_test_last_ms(void)
+uint64_t ast_uuidv7_test_last_ms(void)
 {
 	uint64_t ms = 0;
 

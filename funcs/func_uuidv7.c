@@ -60,10 +60,10 @@ static int uuidv7_read(struct ast_channel *chan, const char *cmd, char *data,
 	(void)cmd;
 	(void)data;
 
-	if (buf == NULL || len < UUIDV7_STR_SIZE) {
+	if (buf == NULL || len < AST_UUIDV7_STR_LEN) {
 		return -1;
 	}
-	if (uuidv7_generate(buf, len) != 0) {
+	if (ast_uuidv7_generate(buf, len) != 0) {
 		buf[0] = '\0';
 		return -1;
 	}
@@ -73,7 +73,7 @@ static int uuidv7_read(struct ast_channel *chan, const char *cmd, char *data,
 static struct ast_custom_function uuidv7_function = {
 	.name = "UUIDV7",
 	.read = uuidv7_read,
-	.read_max = UUIDV7_STR_SIZE,
+	.read_max = AST_UUIDV7_STR_LEN,
 };
 
 static int unload_module(void)
@@ -83,7 +83,7 @@ static int unload_module(void)
 
 static int load_module(void)
 {
-	if (uuidv7_selftest() != 0) {
+	if (ast_uuidv7_selftest() != 0) {
 		ast_log(LOG_ERROR, "uuidv7 self-test failed\n");
 		return AST_MODULE_LOAD_DECLINE;
 	}
